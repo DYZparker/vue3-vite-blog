@@ -2,8 +2,8 @@
 </script>
 
 <template>
-  <router-view></router-view>
+  <div>user</div>
 </template>
 
-<style>
+<style scoped lang="scss">
 </style>
