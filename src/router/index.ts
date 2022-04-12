@@ -5,7 +5,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 const Layout = () => import('../components/Layout.vue')
 const Home = () => import('../views/Home.vue')
-const Manage = () => import('../views/Manage.vue')
+// const Manage = () => import('../views/Manage.vue')
 // const Topic = () => import('../views/Topic')
 const Tag = () => import('../views/Tag.vue')
 // const Link = () => import('../views/Link')
@@ -35,32 +35,32 @@ const routes: Array<RouteRecordRaw> = [
           requiresAuth: true
         }
       },
-      // {
-      //   path: '/tag',
-      //   component: Tag,
-      //   meta: {
-      //     title: '标签',
-      //     requiresAuth: true
-      //   }
-      // },
       {
-        path: '/manage',
-        component: Manage,
+        path: '/tag',
+        component: Tag,
         meta: {
-          title: '页面管理',
+          title: '标签',
           requiresAuth: true
-        },
-        children: [
-          {
-            path: 'tag',
-            component: Tag,
-            meta: {
-              title: '标签',
-              requiresAuth: true
-            }
-          }
-        ]
+        }
       },
+      // {
+      //   path: '/manage',
+      //   component: Manage,
+      //   meta: {
+      //     title: '页面管理',
+      //     requiresAuth: true
+      //   },
+      //   children: [
+      //     {
+      //       path: 'tag',
+      //       component: Tag,
+      //       meta: {
+      //         title: '标签',
+      //         requiresAuth: true
+      //       }
+      //     }
+      //   ]
+      // },
       {
         path: '/user',
         component: User,
