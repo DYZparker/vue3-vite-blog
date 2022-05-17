@@ -35,6 +35,7 @@
         "element-plus/es/components/button/style/css",
         "element-plus/es/components/col/style/css",
         "element-plus/es/components/container/style/css",
+        "element-plus/es/components/dialog/style/css",
         "element-plus/es/components/form-item/style/css",
         "element-plus/es/components/form/style/css",
         "element-plus/es/components/header/style/css",
@@ -42,8 +43,14 @@
         "element-plus/es/components/main/style/css",
         "element-plus/es/components/menu-item/style/css",
         "element-plus/es/components/menu/style/css",
+        "element-plus/es/components/message-box/style/css",
+        "element-plus/es/components/option/style/css",
+        "element-plus/es/components/pagination/style/css",
         "element-plus/es/components/row/style/css",
+        "element-plus/es/components/select/style/css",
         "element-plus/es/components/sub-menu/style/css",
+        "element-plus/es/components/table-column/style/css",
+        "element-plus/es/components/table/style/css",
         "vue",
         "vue-router"
       ]

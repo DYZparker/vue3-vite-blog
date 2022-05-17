@@ -32,77 +32,86 @@ const routes: Array<RouteRecordRaw> = [
         component: Home,
         meta: {
           title: '首页',
+          showlevel: 1,
           requiresAuth: true
         }
       },
       {
-        path: '/tag',
+        path: '/auth',
         component: Tag,
         meta: {
-          title: '标签',
+          title: '基本信息',
+          showlevel: 1,
           requiresAuth: true
         }
       },
-      // {
-      //   path: '/manage',
-      //   component: Manage,
-      //   meta: {
-      //     title: '页面管理',
-      //     requiresAuth: true
-      //   },
-      //   children: [
-      //     {
-      //       path: 'tag',
-      //       component: Tag,
-      //       meta: {
-      //         title: '标签',
-      //         requiresAuth: true
-      //       }
-      //     }
-      //   ]
-      // },
+      {
+        path: '/manage',
+        component: Tag,
+        meta: {
+          title: '页面管理',
+          showlevel: 1,
+          requiresAuth: true
+        },
+        children: [
+          {
+            path: 'tag',
+            component: Tag,
+            meta: {
+              title: '标签',
+              showlevel: 2,
+              requiresAuth: true
+            }
+          },
+          {
+            path: 'link',
+            component: Tag,
+            meta: {
+              title: '链接',
+              showlevel: 2,
+              requiresAuth: true
+            }
+          }
+        ]
+      },
+      {
+        path: '/article',
+        component: Tag,
+        meta: {
+          title: '文章管理',
+          showlevel: 1,
+          requiresAuth: true
+        },
+        children: [
+          {
+            path: 'class',
+            component: Tag,
+            meta: {
+              title: '分类',
+              showlevel: 2,
+              requiresAuth: true
+            }
+          },
+          {
+            path: 'edit',
+            component: Tag,
+            meta: {
+              title: '编辑',
+              showlevel: 2,
+              requiresAuth: true
+            }
+          }
+        ]
+      },
       {
         path: '/user',
         component: User,
         meta: {
           title: '用户信息',
+          showlevel: 1,
           requiresAuth: true
         }
       }
-      // {
-      //   path: '/article',
-      //   component: Article,
-      //   mate: {
-      //     title: '文章管理',
-      //     requireAuth: true
-      //   },
-      //   children: [
-      //     {
-      //       path: 'class',
-      //       component: ArtClass,
-      //       meta: {
-      //         title: '文章分类',
-      //         requiresAuth: true
-      //       }
-      //     },
-      //     {
-      //       path: 'edit',
-      //       component: ArtEdit,
-      //       meta: {
-      //         title: '写文章',
-      //         requiresAuth: true
-      //       }
-      //     },
-      //     {
-      //       path: 'edit/:id',
-      //       component: ArtEdit,
-      //       meta: {
-      //         title: '文章编辑',
-      //         requiresAuth: true
-      //       }
-      //     },
-      //   ]
-      // },
     ]
   }
 ]

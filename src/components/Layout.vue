@@ -18,33 +18,18 @@ import Header from './Header.vue';
 
 <style scoped lang="scss">
 .el-header {
-  background-color: #2d3a4b;
-  // color: var(--el-text-color-primary);
-  // text-align: center;
   height: 80px;
+  background-color: #2d3a4b;
 }
 
 .el-aside {
-  background-color: #545c64;
-  // color: var(--el-text-color-primary);
   height: calc(100vh - 80px);
-  // line-height: 200px;
+  background-color: #545c64;
 }
 
-// .el-main {
-//   background-color: #e9eef3;
-//   color: var(--el-text-color-primary);
-// }
-
-// .layout {
-//   position: absolute;
-//   display: flex;
-//   top: 0;
-//   bottom: 0;
-//   left: 0;
-//   right: 0;
-//   .el-container {
-//     background-color: #f10aac;
-//   }
-// }
+.el-main {
+  display: flex;
+  flex-flow: column nowrap;
+  height: calc(100vh - 80px);
+}
 </style>
