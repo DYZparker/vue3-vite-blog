@@ -13,6 +13,10 @@
 
 <script setup lang="ts">
   import { reactive } from 'vue'
+  import { useStore } from '../store'
+  import { ITableData } from '../types/user'
+  
+  const store = useStore()
   const props = defineProps({
     placeholderName: String,
   })
@@ -25,14 +29,12 @@
     emit('search',formInline.searchName)
   }
 
-  const onAdd = () => {
-    emit('addNew')
-  }
 
   const onReset = () => {
     formInline.searchName = ''
     emit('reset')
   }
+  const onAdd = () => store.commit('userAbout/SHOWDIALOG')
 
 </script>
 
