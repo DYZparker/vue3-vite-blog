@@ -5,7 +5,7 @@
       v-model:page-size="pagination.size"
       :page-sizes="[5, 10, 20]"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="40"
+      :total="total"
       @size-change="handleChange"
       @current-change="handleChange"
     />
@@ -13,10 +13,11 @@
 </template>
 
 <script setup lang="ts">
-  import { reactive, watchEffect } from 'vue'
+  import { computed, reactive, watchEffect } from 'vue'
   import { useStore } from '../store'
 
   const store = useStore()
+  const total = computed(() => store.state.userAbout.tableData.total)
   const pagination = reactive({
     page: 1,
     size: 10,

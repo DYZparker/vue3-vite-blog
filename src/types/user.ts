@@ -36,3 +36,7 @@ export interface IUserAbout {
   editData: IEditData;
   paginationData: IPagination;
 }
+
+export interface IState {
+  userAbout: IUserAbout
+}

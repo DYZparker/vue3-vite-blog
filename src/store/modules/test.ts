@@ -1,9 +1,52 @@
-import { Module } from 'vuex'
-import { ITableRowData, IEditData, IUserAbout, IPagination, IState, ITableData } from '../../types/user'
+import { ITableRowData, IEditData, IUserAbout, IPagination, IState } from '../../types/user'
 import {  getUsers, register, setUser, deleteUser } from '../../http/user'
 import { DIALOG_TRIGGER, SET_EDITDATA, SET_TABLEDATA, UPDATE_TABLEDATA, SET_PAGEDATA } from '../mutation_types'
+import { Module } from 'vuex'
 
-const userModule: Module<IUserAbout, IState> = {
+
+// export function createStore<S>(options: StoreOptions<S>): Store<S>;
+
+// export interface StoreOptions<S> {
+//   state?: S | (() => S);
+//   getters?: GetterTree<S, S>;
+//   actions?: ActionTree<S, S>;
+//   mutations?: MutationTree<S>;
+//   modules?: ModuleTree<S>;
+//   plugins?: Plugin<S>[];
+//   strict?: boolean;
+//   devtools?: boolean;
+// }
+
+// export interface ModuleOptions {
+//   preserveState?: boolean;
+// }
+
+// export interface GetterTree<S, R> {
+//   [key: string]: Getter<S, R>;
+// }
+
+// export interface ActionTree<S, R> {
+//   [key: string]: Action<S, R>;
+// }
+
+// export interface MutationTree<S> {
+//   [key: string]: Mutation<S>;
+// }
+
+// export interface ModuleTree<R> {
+//   [key: string]: Module<any, R>;
+// }
+
+// export interface Module<S, R> {
+//   namespaced?: boolean;
+//   state?: S | (() => S);
+//   getters?: GetterTree<S, R>;
+//   actions?: ActionTree<S, R>;
+//   mutations?: MutationTree<S>;
+//   modules?: ModuleTree<R>;
+// }
+
+const test: Module<IUserAbout, IState> =  {
   namespaced:true,
   state:() =>({
     dialogVisible: false,
@@ -55,7 +98,7 @@ const userModule: Module<IUserAbout, IState> = {
     getUsersData(context: any, data: IPagination){
       console.log('actions中的getUsersData被调用了')
       getUsers(data).then(res => {
-        context.commit('SET_TABLEDATA',res.data.result)
+        context.commit('SET_TABLEDATA',res.data.result.userList)
       })
     },
     
@@ -66,7 +109,7 @@ const userModule: Module<IUserAbout, IState> = {
       context.commit('SET_EDITDATA', data)
     },
     
-    // 提交dialog，先判断是新增还是编辑再发送到服务器
+    // 编辑某个用户信息
     editUser(context: any, data: IEditData){
       console.log('actions中的editUser被调用了')
       const loading = ElLoading.service({
@@ -105,11 +148,11 @@ const userModule: Module<IUserAbout, IState> = {
   },
 
   mutations:{
-    // 更改tableData
-    [SET_TABLEDATA](state: IUserAbout, data: ITableData){
+    // 更改tableData.list
+    [SET_TABLEDATA](state: IUserAbout, data: Array<ITableRowData>){
       console.log('mutations中的SET_TABLEDATA被调用了')
-      state.tableData.total = data.total
-      state.tableData.list = [...data.list]
+      // 添加判断page+1才执行
+      state.tableData.list = [...data]
     },
     
     // dialog打开或者关闭
@@ -128,7 +171,6 @@ const userModule: Module<IUserAbout, IState> = {
     [UPDATE_TABLEDATA](state: IUserAbout, data: ITableRowData){
       console.log('mutations中的UPDATE_TABLEDATA被调用了')
       if(state.editData.index === -1) {
-        state.tableData.total += 1
         state.tableData.list.unshift({...data})
       }else{
         state.tableData.list[state.editData.index] = {...data}
@@ -156,4 +198,4 @@ const userModule: Module<IUserAbout, IState> = {
   // },
 }
 
-export default userModule
+export default test
