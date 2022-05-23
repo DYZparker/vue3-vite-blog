@@ -14,7 +14,6 @@
 <script setup lang="ts">
   import { reactive } from 'vue'
   import { useStore } from '../store'
-  import { ITableData } from '../types/user'
   
   const store = useStore()
   const props = defineProps({
@@ -24,6 +23,15 @@
   const formInline = reactive({
     searchName: ''
   })
+  let dialogData = reactive({
+    index: -1,
+    data: {
+      _id: 0,
+      username: '',
+      password: '',
+      isAdmin: false
+    }
+  })
 
   const onSubmit = () => {
     emit('search',formInline.searchName)
@@ -32,9 +40,9 @@
 
   const onReset = () => {
     formInline.searchName = ''
-    emit('reset')
+    store.dispatch('userAbout/getUsersData')
   }
-  const onAdd = () => store.commit('userAbout/SHOWDIALOG')
+  const onAdd = () => store.dispatch('userAbout/editDialog', dialogData)
 
 </script>
 

@@ -8,17 +8,17 @@
     <el-form
       :label-position="labelPosition"
       label-width="100px"
-      :model="editData"
+      :model="dialogData.data"
       :rules="rules"
       style="max-width: 460px"
     >
       <el-form-item v-for="item in isEditTableMenu" :label="item.title" :prop="item.propName">
         <!-- 判断可编辑项是否用插槽的样式展示，默认用input -->
         <div v-if="item.hasSlot">
-          <slot :editData="editData"></slot>
+          <slot :data="dialogData.data"></slot>
         </div>
         <div v-else>
-          <el-input v-model="editData[item.propName]"></el-input>
+          <el-input v-model="dialogData.data[item.propName]"></el-input>
         </div>
       </el-form-item>
     </el-form>
@@ -48,12 +48,8 @@
   const store = useStore()
   const { tableMenu } = store.state.userAbout
   const labelPosition = ref('right')
-  const editData = reactive({
-    username: '',
-    password: '',
-    admin: false,
-    date: ''
-  })
+  const isEditTableMenu = computed(() => tableMenu.filter(item => item.isEdit === true))
+  // 计算值dialogVisible双向绑定v-model要用完整写法包含set
   const dialogVisible = computed({
     get() {
       return store.state.userAbout.dialogVisible
@@ -62,16 +58,39 @@
       store.state.userAbout.dialogVisible = value
     }
   })
-  watchEffect(() => {
-    const obj = store.state.userAbout.editData.data
-    for(let item in editData){
-      editData[item] = obj[item]
+  
+  /* 
+    不能用v-model绑定vuex的state中对象类型的计算值（computed），
+    原因：
+        1. 双向绑定computed参数对象中要写set函数，如果input是v-for循环不好定义输入类型
+        2. 就算单个input双向绑定了，input输入就会更改vuex的state
+    解决：
+        在组件中声明中间变量，watchEffect监听vuex中数据变化并赋值给中间变量，中间变量值改变页面重新渲染
+  */
+  let dialogData = reactive({
+    index: -1,
+    data: {
+      _id: 0,
+      username: '',
+      password: '',
+      isAdmin: false
     }
   })
-  const isEditTableMenu = computed(() => tableMenu.filter(item => item.isEdit === true))
-
-  const closeDialog = () => store.commit('userAbout/CLOSE')
-  const editDialog = () => store.commit('userAbout/EDIT', editData)
+  watchEffect(() => {
+    const obj = store.state.userAbout.editData
+    /* 
+      拷贝对象，用JSON方法或者解构赋值都会丢失响应性，只能用for循环，且不能深拷贝
+      1.  dialogData = reactive(JSON.parse(JSON.stringify(obj)))
+      2.  const {...a} = store.state.userAbout.editData
+          dialogData = a 
+    */
+    dialogData.index = obj.index
+    for(let item in dialogData.data){
+      dialogData.data[item] = obj.data[item]
+    }
+  })
+  const closeDialog = () => store.commit('userAbout/DIALOG_TRIGGER', false)
+  const editDialog = () => store.dispatch('userAbout/editUser', dialogData)
   const handleClose = () => {
     ElMessageBox.confirm('确定要取消编辑吗？')
       .then(() => closeDialog())

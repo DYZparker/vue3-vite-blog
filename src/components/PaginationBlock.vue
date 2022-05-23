@@ -1,35 +1,37 @@
 <template>
   <div class="pagination-block">
     <el-pagination
-      v-model:currentPage="currentPage4"
-      v-model:page-size="pageSize4"
-      :page-sizes="[10, 20, 30, 40]"
-      :small="small"
-      :disabled="disabled"
-      :background="background"
+      v-model:currentPage="pagination.page"
+      v-model:page-size="pagination.size"
+      :page-sizes="[5, 10, 20]"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
+      :total="40"
+      @size-change="handleChange"
+      @current-change="handleChange"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  const currentPage4 = ref(4)
-  const pageSize4 = ref(10)
-  const small = ref(false)
-  const background = ref(false)
-  const disabled = ref(false)
+  import { reactive, watchEffect } from 'vue'
+  import { useStore } from '../store'
 
-  const handleSizeChange = (val: number) => {
-    console.log(`${val} items per page`)
+  const store = useStore()
+  const pagination = reactive({
+    page: 1,
+    size: 10,
+    search: ''
+  })
+  watchEffect(() => {
+    const obj = store.state.userAbout.paginationData
+    for(let item in pagination){
+      pagination[item] = obj[item]
+    }
+  })
+  const handleChange = (val: number) => {
+    store.commit('userAbout/SET_PAGEDATA', pagination)
+    store.dispatch('userAbout/getUsersData', pagination)
   }
-  const handleCurrentChange = (val: number) => {
-    console.log(`current page: ${val}`)
-  }
-
 </script>
 
 <style scoped lang="scss">

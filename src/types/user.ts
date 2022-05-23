@@ -6,21 +6,33 @@ export interface ITableMenu {
   width: number;
 }
 
-export interface ITableData {
+export interface ITableRowData {
+  _id: number;
   username: string;
   password: string;
-  admin: boolean;
-  date: string;
+  isAdmin: boolean;
+}
+
+export interface ITableData {
+  total: number;
+  list: Array<ITableRowData>;
 }
 
 export interface IEditData {
   index: number;
-  data: ITableData;
+  data: ITableRowData;
+}
+
+export interface IPagination {
+  page: number;
+  size: number;
+  search: string;
 }
 
 export interface IUserAbout {
   dialogVisible: boolean;
   tableMenu: Array<ITableMenu>;
-  tableData: Array<ITableData>;
+  tableData: ITableData;
   editData: IEditData;
+  paginationData: IPagination;
 }

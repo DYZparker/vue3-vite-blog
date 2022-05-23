@@ -3,9 +3,9 @@
   <DataTableBlock />
   <PaginationBlock />
   <DialogBlock>
-    <template #default ="{editData}">
-      <el-form-item  :label="editData.title">
-        <el-radio-group v-model="editData.admin">
+    <template #default ="{data}">
+      <el-form-item  :label="data.title">
+        <el-radio-group v-model="data.isAdmin">
           <el-radio :label="true">管理员</el-radio>
           <el-radio :label="false">普通用户</el-radio>
         </el-radio-group>

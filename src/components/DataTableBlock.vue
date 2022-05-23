@@ -1,6 +1,6 @@
 <template>
   <el-table 
-    :data="tableData" 
+    :data="tableDataList" 
     height="100%" 
     border 
     :header-cell-style="cellStyle" 
@@ -13,6 +13,11 @@
       :label="item.title" 
       :min-width="item.width" 
     />
+    <el-table-column label="添加时间" min-width="180">
+      <template #default="scope">
+        {{initDate(scope.row)}}
+      </template>
+    </el-table-column>
     <el-table-column label="操作" min-width="180">
       <template #default="scope">
         <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -24,16 +29,23 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
+  import moment from 'moment';
   import { useStore } from '../store'
-  import { ITableData } from '../types/user'
+  import { ITableRowData } from '../types/user'
 
   const store = useStore()
-  const { tableMenu } = store.state.userAbout
-  const tableData = computed(() => store.state.userAbout.tableData)
+  const { tableMenu, paginationData } = store.state.userAbout
+  const tableDataList = computed(() => store.state.userAbout.tableData.list)
+  store.dispatch('userAbout/getUsersData', paginationData)
   
   const cellStyle = () => "text-align:center"
   const rowClass = () => "text-align:center"
-  const handleEdit = (index:number, data: ITableData) => store.commit('userAbout/SHOW', {index, data})
+  const initDate = (data: ITableRowData)=>{
+		// 截取_id的前8位十六进制时间戳转换为十进制
+		const timeStr = data._id.toString().slice(0, 8)
+    return moment(parseInt(timeStr, 16)*1000).format('YYYY-MM-DD')
+  }
+  const handleEdit = (index:number, data: ITableRowData) => store.dispatch('userAbout/editDialog',{ index, data })
   const handleDelete = (index:number) => {
     ElMessageBox.confirm('确定要删除此数据吗？')
       .then(() => store.commit('userAbout/DELETE', index))
