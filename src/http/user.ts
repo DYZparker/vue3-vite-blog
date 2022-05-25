@@ -25,9 +25,9 @@ export const setUser = (data: ITableRowData) => {
   })
 }
 
-export const deleteUser = () => {
+export const deleteUser = (data: ITableRowData) => {
   return $http({
-    url: "/users/remove/:id",
+    url: `/users/remove/${data._id}`,
     method: "delete"
   })
 }

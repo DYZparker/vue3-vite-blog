@@ -26,12 +26,11 @@ export interface IEditData {
 export interface IPagination {
   page: number;
   size: number;
-  search: string;
+  search: object;
 }
 
 export interface IUserAbout {
   dialogVisible: boolean;
-  tableMenu: Array<ITableMenu>;
   tableData: ITableData;
   editData: IEditData;
   paginationData: IPagination;

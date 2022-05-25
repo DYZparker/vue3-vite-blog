@@ -13,26 +13,24 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, reactive, watchEffect } from 'vue'
-  import { useStore } from '../store'
+  import { reactive, watchEffect } from 'vue'
 
-  const store = useStore()
-  const total = computed(() => store.state.userAbout.tableData.total)
+  const props = defineProps<{
+    total: number,
+    paginationData: any
+  }>()
+  const emit  = defineEmits(['changePage'])
   const pagination = reactive({
     page: 1,
     size: 10,
-    search: ''
+    search: {}
   })
   watchEffect(() => {
-    const obj = store.state.userAbout.paginationData
     for(let item in pagination){
-      pagination[item] = obj[item]
+      pagination[item] = props.paginationData[item]
     }
   })
-  const handleChange = (val: number) => {
-    store.commit('userAbout/SET_PAGEDATA', pagination)
-    store.dispatch('userAbout/getUsersData', pagination)
-  }
+  const handleChange = () => emit('changePage', pagination)
 </script>
 
 <style scoped lang="scss">

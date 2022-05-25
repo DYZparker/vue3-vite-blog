@@ -1,6 +1,6 @@
 <template>
   <el-table 
-    :data="tableDataList" 
+    :data="tableList" 
     height="100%" 
     border 
     :header-cell-style="cellStyle" 
@@ -9,6 +9,7 @@
     <el-table-column type="index" label="序号" width="180" />
     <el-table-column 
       v-for="item in tableMenu" 
+      :key="item.propName"
       :prop="item.propName" 
       :label="item.title" 
       :min-width="item.width" 
@@ -20,35 +21,40 @@
     </el-table-column>
     <el-table-column label="操作" min-width="180">
       <template #default="scope">
-        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-        <el-button size="small" type="danger" @click="handleDelete(scope.$index)">删除</el-button>
+        <el-button 
+          size="small" 
+          @click="handleEdit(scope.$index, scope.row)"
+        >编辑</el-button>
+        <el-button 
+          size="small" 
+          type="danger" 
+          @click="handleDelete(scope.$index, scope.row)"
+        >删除</el-button>
       </template>
     </el-table-column>
   </el-table>
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
-  import moment from 'moment';
-  import { useStore } from '../store'
-  import { ITableRowData } from '../types/user'
+  import moment from 'moment'
 
-  const store = useStore()
-  const { tableMenu, paginationData } = store.state.userAbout
-  const tableDataList = computed(() => store.state.userAbout.tableData.list)
-  store.dispatch('userAbout/getUsersData', paginationData)
-  
+  defineProps<{
+    tableMenu: Array<any>,
+    tableList: Array<any>
+  }>()
+  const emit  = defineEmits(['edit', 'remove'])
   const cellStyle = () => "text-align:center"
   const rowClass = () => "text-align:center"
-  const initDate = (data: ITableRowData)=>{
+  // 将数据库自动注册的id转为日期
+  const initDate = (data: any)=>{
 		// 截取_id的前8位十六进制时间戳转换为十进制
 		const timeStr = data._id.toString().slice(0, 8)
     return moment(parseInt(timeStr, 16)*1000).format('YYYY-MM-DD')
   }
-  const handleEdit = (index:number, data: ITableRowData) => store.dispatch('userAbout/editDialog',{ index, data })
-  const handleDelete = (index:number) => {
+  const handleEdit = (index:number, data: any) => emit('edit', index, data)
+  const handleDelete = (index:number, data: any) => {
     ElMessageBox.confirm('确定要删除此数据吗？')
-      .then(() => store.commit('userAbout/DELETE', index))
+      .then(() => emit('remove', index, data))
       .catch(() => {}
     )
   }

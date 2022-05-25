@@ -1,35 +1,12 @@
 import { Module } from 'vuex'
 import { ITableRowData, IEditData, IUserAbout, IPagination, IState, ITableData } from '../../types/user'
 import {  getUsers, register, setUser, deleteUser } from '../../http/user'
-import { DIALOG_TRIGGER, SET_EDITDATA, SET_TABLEDATA, UPDATE_TABLEDATA, SET_PAGEDATA } from '../mutation_types'
+import { DIALOG_TRIGGER, SET_EDITDATA, SET_TABLEDATA, UPDATE_TABLEDATA, SET_PAGEDATA, DELETE_USER } from '../mutation_types'
 
 const userModule: Module<IUserAbout, IState> = {
   namespaced:true,
   state:() =>({
     dialogVisible: false,
-    tableMenu: [
-      { 
-        title: '账号',
-        propName: 'username',
-        isEdit: true,
-        hasSlot: false,
-        width: 180
-      },
-      { 
-        title: '密码',
-        propName: 'password',
-        isEdit: true,
-        hasSlot: false,
-        width: 180
-      },
-      { 
-        title: '管理员',
-        propName: 'isAdmin',
-        isEdit: true,
-        hasSlot: true,
-        width: 180
-      }
-    ],
     tableData: {
       total: 0,
       list: []
@@ -46,87 +23,90 @@ const userModule: Module<IUserAbout, IState> = {
     paginationData: {
       page: 1,
       size: 10,
-      search: ''
+      search: {}
     }
   }),
 
   actions:{
     // 获取用户列表
-    getUsersData(context: any, data: IPagination){
-      console.log('actions中的getUsersData被调用了')
-      getUsers(data).then(res => {
-        context.commit('SET_TABLEDATA',res.data.result)
-      })
+    async getUsersData(context: any, data?: IPagination){
+      const res = await getUsers(data ? data : context.state.paginationData)
+      data && context.commit('SET_PAGEDATA', data)
+      context.commit('SET_TABLEDATA',res.data.result)
     },
     
     // 打开dialog并传递编辑信息
     editDialog(context: any, data: IEditData){
-      console.log('actions中的editDialog被调用了')
       context.commit('DIALOG_TRIGGER', true)
       context.commit('SET_EDITDATA', data)
     },
     
     // 提交dialog，先判断是新增还是编辑再发送到服务器
-    editUser(context: any, data: IEditData){
-      console.log('actions中的editUser被调用了')
+    async editUser(context: any, data: IEditData){
       const loading = ElLoading.service({
         lock: true,
         text: 'Loading',
         background: 'rgba(0, 0, 0, 0.7)',
       })
-      // 编辑中等待loading加载，编辑成功提示信息，更改数据，关闭dialog
-      const showMessage = (res: any) => {
-        if(res){
-          loading.close()
-          ElMessage({
-            message: '恭喜，操作服务器成功！',
-            type: 'success',
-          })
-          context.commit('UPDATE_TABLEDATA', data.data)
-          context.commit('DIALOG_TRIGGER', false)
-        }else{
-          loading.close()
-          ElMessage.error('抱歉，服务器繁忙！')
-        }
+      // 提交数据loading加载，成功后提示信息，更改数据，关闭dialog
+      const showSuccess = (msg: string) => {
+        context.dispatch('getUsersData')
+        context.commit('DIALOG_TRIGGER', false)
+        ElMessage({
+          message: msg,
+          type: 'success',
+        })
       }
       // 用dialog数据是否有序号来判断是新增还是编辑
       if(data.index === -1) {
-        register(data.data).then(res => showMessage(res))
+        const res = await register(data.data)
+        loading.close()
+        res && showSuccess(res.data.message)
       }else{
-        setUser(data.data).then(res => showMessage(res))
+        const res = await setUser(data.data)
+        loading.close()
+        res && showSuccess(res.data.message)
       }
     },
     
     // 删除用户
-    // removeUser(state: IUserAbout){
-    //   console.log('actions中的removeUser被调用了')
-    //   state.dialogVisible = false
-    // },
+    async removeUser(context: any, data: IEditData){
+      const loading = ElLoading.service({
+        lock: true,
+        text: 'Loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      })
+      const res = await deleteUser(data.data)
+      loading.close()
+      if(res){
+        context.dispatch('getUsersData')
+        ElMessage({
+          message: res.data.message,
+          type: 'success',
+        })
+      }
+    },
   },
 
   mutations:{
     // 更改tableData
     [SET_TABLEDATA](state: IUserAbout, data: ITableData){
-      console.log('mutations中的SET_TABLEDATA被调用了')
       state.tableData.total = data.total
       state.tableData.list = [...data.list]
     },
     
     // dialog打开或者关闭
     [DIALOG_TRIGGER](state: IUserAbout, data: boolean){
-      console.log('mutations中的DIALOG_TRIGGER被调用了')
       state.dialogVisible = data
     },
     
     // 打开dialog编辑已有的项
     [SET_EDITDATA](state: IUserAbout, data: IEditData){
-      console.log('mutations中的SET_EDITDATA被调用了')
       state.editData = {...data}
     },
     
     // 更新tableData.list的某一项，如果序号存在则提交编辑，如序号为-1则为添加新项
     [UPDATE_TABLEDATA](state: IUserAbout, data: ITableRowData){
-      console.log('mutations中的UPDATE_TABLEDATA被调用了')
       if(state.editData.index === -1) {
         state.tableData.total += 1
         state.tableData.list.unshift({...data})
@@ -135,9 +115,8 @@ const userModule: Module<IUserAbout, IState> = {
       }
     },
     
-    // 删除已有的项
-    DELETE_USER(state: IUserAbout, index: number){
-      console.log('mutations中的DELETE_USER被调用了')
+    // 删除用户
+    [DELETE_USER](state: IUserAbout, index: number){
       const arr = [...state.tableData.list]
       arr.splice(index, 1)
       state.tableData.list = arr
@@ -145,15 +124,9 @@ const userModule: Module<IUserAbout, IState> = {
     
     // 更新paginationData
     [SET_PAGEDATA](state: IUserAbout, data: IPagination){
-      console.log('mutations中的SET_PAGEDATA被调用了')
       state.paginationData = {...data}
     },
-  },
-  // getters:{
-  //   bigSum(state){
-  //     return state.sum*10
-  //   }
-  // },
+  }
 }
 
 export default userModule

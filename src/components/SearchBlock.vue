@@ -13,36 +13,37 @@
 
 <script setup lang="ts">
   import { reactive } from 'vue'
-  import { useStore } from '../store'
   
-  const store = useStore()
-  const props = defineProps({
-    placeholderName: String,
-  })
-  const emit = defineEmits(['search', 'addNew', 'reset'])
+  defineProps<{
+    placeholderName: String
+  }>()
+  const emit  = defineEmits(['getData', 'addNew'])
   const formInline = reactive({
     searchName: ''
   })
-  let dialogData = reactive({
-    index: -1,
-    data: {
-      _id: 0,
-      username: '',
-      password: '',
-      isAdmin: false
-    }
+  const pagination = reactive({
+    page: 1,
+    size: 10,
+    search: {}
   })
 
   const onSubmit = () => {
-    emit('search',formInline.searchName)
+    if(formInline.searchName.trim() !== '') {
+      pagination.search = {username: formInline.searchName}
+      emit('getData', pagination)
+    }else{
+      ElMessage({
+        message: '请输入内容',
+        type: 'warning',
+      })
+    }
   }
-
-
+  const onAdd = () => emit('addNew')
   const onReset = () => {
     formInline.searchName = ''
-    store.dispatch('userAbout/getUsersData')
+    pagination.search = {}
+    emit('getData', pagination)
   }
-  const onAdd = () => store.dispatch('userAbout/editDialog', dialogData)
 
 </script>
 
