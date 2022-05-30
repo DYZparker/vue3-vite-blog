@@ -1,5 +1,6 @@
 import { Module } from 'vuex'
-import { ITableRowData, IEditData, IUserAbout, IPagination, IState, ITableData } from '../../types/user'
+import { IPagination, IState } from '../../types/common'
+import { ITableRowData, IEditData, IUserAbout, ITableData } from '../../types/user'
 import {  getUsers, register, setUser, deleteUser } from '../../http/user'
 import { DIALOG_TRIGGER, SET_EDITDATA, SET_TABLEDATA, UPDATE_TABLEDATA, SET_PAGEDATA, DELETE_USER } from '../mutation_types'
 
@@ -49,7 +50,7 @@ const userModule: Module<IUserAbout, IState> = {
         background: 'rgba(0, 0, 0, 0.7)',
       })
       // 提交数据loading加载，成功后提示信息，更改数据，关闭dialog
-      const showSuccess = (msg: string) => {
+      const showMessage = (msg: string) => {
         context.dispatch('getUsersData')
         context.commit('DIALOG_TRIGGER', false)
         ElMessage({
@@ -61,11 +62,11 @@ const userModule: Module<IUserAbout, IState> = {
       if(data.index === -1) {
         const res = await register(data.data)
         loading.close()
-        res && showSuccess(res.data.message)
+        res && showMessage(res.data.message)
       }else{
         const res = await setUser(data.data)
         loading.close()
-        res && showSuccess(res.data.message)
+        res && showMessage(res.data.message)
       }
     },
     

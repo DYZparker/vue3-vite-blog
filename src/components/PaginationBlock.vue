@@ -14,10 +14,11 @@
 
 <script setup lang="ts">
   import { reactive, watchEffect } from 'vue'
+  import { IPagination } from '../types/common'
 
   const props = defineProps<{
     total: number,
-    paginationData: any
+    paginationData: IPagination
   }>()
   const emit  = defineEmits(['changePage'])
   const pagination = reactive({

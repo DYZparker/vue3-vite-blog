@@ -83,6 +83,11 @@
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
 
+"@types/marked@^4.0.3":
+  version "4.0.3"
+  resolved "https://registry.npmmirror.com/@types/marked/-/marked-4.0.3.tgz#2098f4a77adaba9ce881c9e0b6baf29116e5acc4"
+  integrity sha512-HnMWQkLJEf/PnxZIfbm0yGJRRZYYMhb++O9M36UCTA9z53uPvVoSlAwJr3XOpDEryb7Hwl1qAx/MV6YIW1RXxg==
+
 "@vitejs/plugin-vue@^1.9.3":
   version "1.9.3"
   resolved "https://registry.npmmirror.com/@vitejs/plugin-vue/download/@vitejs/plugin-vue-1.9.3.tgz#93d61893ce6c723d0209af0483ec8b91a2cd811f"
@@ -789,6 +794,13 @@ magic-string@^0.26.1:
   integrity sha512-ndThHmvgtieXe8J/VGPjG+Apu7v7ItcD5mhEIvOscWjPF/ccOiLxHaSuCAS2G+3x4GKsAbT8u7zdyamupui8Tg==
   dependencies:
     sourcemap-codec "^1.4.8"
+
+md-editor-v3@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmmirror.com/md-editor-v3/-/md-editor-v3-2.0.1.tgz#04dd05e786b4c2a5a6a09fdd7dff8dca4ad0a2f3"
+  integrity sha512-qwH5jpAj6d6sjv9PIxQYFCX/hHKUDMYdcRWtxKR6Qh4SCBxHoDHEcLjiiEo03EJ/Lgui+3nv9+XFtNQgwm09Vg==
+  dependencies:
+    "@types/marked" "^4.0.3"
 
 memoize-one@^5.2.1:
   version "5.2.1"

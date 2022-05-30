@@ -9,9 +9,9 @@ const Home = () => import('../views/Home.vue')
 // const Topic = () => import('../views/Topic')
 const Tag = () => import('../views/Tag.vue')
 // const Link = () => import('../views/Link')
-// const Article = () => import('../views/Article')
-// const ArtClass = () => import('../views/ArtClass')
-// const ArtEdit = () => import('../views/ArtEdit')
+const Articles = () => import('../views/Articles.vue')
+const ArticleManage = () => import('../views/ArticleManage.vue')
+const ArticleEdit = () => import('../views/ArticleEdit.vue')
 const User = () => import('../views/User.vue')
 const Login = () => import('../views/Login.vue')
 
@@ -76,7 +76,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: '/article',
-        component: Tag,
+        component: ArticleManage,
         meta: {
           title: '文章管理',
           showlevel: 1,
@@ -84,8 +84,8 @@ const routes: Array<RouteRecordRaw> = [
         },
         children: [
           {
-            path: 'class',
-            component: Tag,
+            path: 'classify',
+            component: Articles,
             meta: {
               title: '分类',
               showlevel: 2,
@@ -94,7 +94,7 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: 'edit',
-            component: Tag,
+            component: ArticleEdit,
             meta: {
               title: '编辑',
               showlevel: 2,

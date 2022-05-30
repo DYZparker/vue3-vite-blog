@@ -1,8 +1,7 @@
-// import type { FormInstance } from 'element-plus'
-import FormInstance from 'element-plus'
 import {ref} from 'vue'
+import type { ElForm } from 'element-plus'
 
-type FormInstance = /*unresolved*/ any
+type FormInstance = InstanceType<typeof ElForm>
 
 export interface LoginFormInt {
   user_name: string,
@@ -14,6 +13,5 @@ export class InitData {
     user_name: '',
     password: ''
   }
-  // loginFormRef: any = null
   loginFormRef = ref<FormInstance>()
 }

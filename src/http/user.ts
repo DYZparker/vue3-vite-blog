@@ -1,5 +1,6 @@
 import $http from './index'
-import { ITableRowData, IPagination } from '../types/user'
+import { IPagination } from '../types/common'
+import { ITableRowData } from '../types/user'
 
 export const getUsers = (data: IPagination) => {
   return $http({

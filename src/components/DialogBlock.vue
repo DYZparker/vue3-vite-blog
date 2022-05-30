@@ -43,11 +43,12 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import type { ElForm } from 'element-plus'
+  import { ITableMenu } from '../types/common'
 
   defineProps<{
     Visible: Boolean
     rules: Object,
-    isEditTableMenu: Array<any>,
+    isEditTableMenu: Array<ITableMenu>,
     data: Object
   }>()
   const emit  = defineEmits(['closeDialog', 'editDialog'])

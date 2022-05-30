@@ -37,9 +37,10 @@
 
 <script setup lang="ts">
   import moment from 'moment'
+  import { ITableMenu } from '../types/common'
 
   defineProps<{
-    tableMenu: Array<any>,
+    tableMenu: Array<ITableMenu>,
     tableList: Array<any>
   }>()
   const emit  = defineEmits(['edit', 'remove'])

@@ -2,9 +2,11 @@ import { IPagination } from './common'
 
 export interface ITableRowData {
   _id: number;
-  username: string;
-  password: string;
-  isAdmin: boolean;
+  title: string;
+  tags: Array<string>;
+  img?: string;
+  summary: string;
+  content: string;
 }
 
 export interface ITableData {
@@ -17,8 +19,7 @@ export interface IEditData {
   data: ITableRowData;
 }
 
-export interface IUserAbout {
-  dialogVisible: boolean;
+export interface IArticleAbout {
   tableData: ITableData;
   editData: IEditData;
   paginationData: IPagination;
