@@ -1,6 +1,6 @@
 <template>
   <SearchBlock 
-    placeholderName="账号" 
+    :searchMsg="searchMsg" 
     @getData="getData" 
     @addNew="addNew" 
   />
@@ -72,6 +72,10 @@ const tableMenu = [
 ]
 
 /* SearchBlock组件start */
+const searchMsg = {
+  searchName: 'username',
+  placeholderName: '账号'
+}
 const initEditData = {
   index: -1,
   data: {

@@ -22,8 +22,8 @@
         <i class="el-icon-s-management"></i>
         <span>文章管理</span>
       </template>
-      <el-menu-item index="/article/classify">分类</el-menu-item>
-      <el-menu-item index="/article/edit">编辑</el-menu-item>
+      <el-menu-item index="/article/classify">列表</el-menu-item>
+      <el-menu-item index="/article/edit">新增</el-menu-item>
     </el-sub-menu>
     <el-menu-item index="/user">
       <i class="el-icon-s-custom"></i>

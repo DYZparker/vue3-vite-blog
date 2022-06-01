@@ -1,7 +1,7 @@
 <template>
   <el-form :inline="true" :model="formInline" class="form-inline">
     <el-form-item label="">
-      <el-input v-model="formInline.searchName" :placeholder="placeholderName" />
+      <el-input v-model="formInline.inputData" :placeholder="searchMsg.placeholderName" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -14,12 +14,15 @@
 <script setup lang="ts">
   import { reactive } from 'vue'
   
-  defineProps<{
-    placeholderName: String
+  const props = defineProps<{
+    searchMsg: {
+      searchName: String,
+      placeholderName: String
+    }
   }>()
   const emit  = defineEmits(['getData', 'addNew'])
   const formInline = reactive({
-    searchName: ''
+    inputData: ''
   })
   const pagination = reactive({
     page: 1,
@@ -28,8 +31,9 @@
   })
 
   const onSubmit = () => {
-    if(formInline.searchName.trim() !== '') {
-      pagination.search = {username: formInline.searchName}
+    if(formInline.inputData.trim() !== '') {
+      const name = String(props.searchMsg.searchName)
+      pagination.search = {[name]: formInline.inputData}
       emit('getData', pagination)
     }else{
       ElMessage({
@@ -40,7 +44,7 @@
   }
   const onAdd = () => emit('addNew')
   const onReset = () => {
-    formInline.searchName = ''
+    formInline.inputData = ''
     pagination.search = {}
     emit('getData', pagination)
   }

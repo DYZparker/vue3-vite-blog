@@ -17,17 +17,14 @@
     </el-form-item>
     <el-form-item label="标签分类" prop="tags">
       <el-checkbox-group v-model="ruleForm.tags">
-        <el-checkbox label="Online activities" name="type" />
-        <el-checkbox label="Promotion activities" name="type" />
-        <el-checkbox label="Offline activities" name="type" />
-        <el-checkbox label="Simple brand exposure" name="type" />
+        <el-checkbox label="react" name="type" />
+        <el-checkbox label="vue" name="type" />
+        <el-checkbox label="node" name="type" />
+        <el-checkbox label="html" name="type" />
       </el-checkbox-group>
     </el-form-item>
     <el-form-item label="文章内容" prop="content">
-      <md-editor 
-        v-model="ruleForm.content" 
-        preview-only
-      />
+      <v-md-editor v-model="ruleForm.content" height="400px"></v-md-editor>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm(ruleFormRef)"
@@ -39,12 +36,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onBeforeUnmount, shallowRef, onMounted, computed } from 'vue'
+import { reactive, ref, onMounted, computed } from 'vue'
 import type { ElForm } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from '../store'
-import MdEditor from 'md-editor-v3';
-import 'md-editor-v3/lib/style.css';
 
 const route = useRoute()
 const router = useRouter()
@@ -60,7 +55,6 @@ const ruleForm = reactive({
     summary: '',
     content: ''
 })
-const valueHtml  = ref('<p>hello</p>')
 const rules = {
   title: [
     { required: true, message: '请输入文章标题', trigger: 'blur' }
@@ -98,19 +92,17 @@ const rules = {
 const tableList = computed(() => articleAbout.tableData.list)
 onMounted(() => {
   const num = Number(route.query.index)
-  if(route.query.index) {
+  if(route.query.index && tableList.value.length > 0) {
     for(let item in ruleForm){
       ruleForm[item] = tableList.value[num][item]
     }
   }
-      console.log('onMounted!', ruleForm, tableList.value)
 })
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
-      console.log('submit!', ruleForm)
       store.dispatch('articleAbout/editArticle', {
         index: route.query.index,
         data: ruleForm

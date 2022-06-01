@@ -1,6 +1,6 @@
 <template>
   <SearchBlock 
-    placeholderName="账号" 
+    :searchMsg="searchMsg" 
     @getData="getData" 
     @addNew="addNew" 
   />
@@ -62,18 +62,16 @@ const tableMenu = [
 ]
 
 /* SearchBlock组件start */
-const initEditData = {
-  index: -1,
-  data: {
-    _id: 0,
-    title: '',
-    tags: [],
-    img: '',
-    summary: ''
-  }
+const searchMsg = {
+  searchName: 'keywords',
+  placeholderName: '关键字'
 }
 const getData = (data: IPagination) => store.dispatch('articleAbout/getArticleData', data)
-const addNew = () => store.dispatch('articleAbout/editDialog', initEditData)
+const addNew = () => {
+  router.push({
+    path: '/article/edit'
+  })
+}
 /* SearchBlock组件end */
 
 /* DataTableBlock组件start */

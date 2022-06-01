@@ -21,6 +21,6 @@ export interface IEditData {
 
 export interface IArticleAbout {
   tableData: ITableData;
-  editData: IEditData;
+  // editData: IEditData;
   paginationData: IPagination;
 }

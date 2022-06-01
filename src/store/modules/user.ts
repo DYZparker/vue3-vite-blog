@@ -107,21 +107,21 @@ const userModule: Module<IUserAbout, IState> = {
     },
     
     // 更新tableData.list的某一项，如果序号存在则提交编辑，如序号为-1则为添加新项
-    [UPDATE_TABLEDATA](state: IUserAbout, data: ITableRowData){
-      if(state.editData.index === -1) {
-        state.tableData.total += 1
-        state.tableData.list.unshift({...data})
-      }else{
-        state.tableData.list[state.editData.index] = {...data}
-      }
-    },
+    // [UPDATE_TABLEDATA](state: IUserAbout, data: ITableRowData){
+    //   if(state.editData.index === -1) {
+    //     state.tableData.total += 1
+    //     state.tableData.list.unshift({...data})
+    //   }else{
+    //     state.tableData.list[state.editData.index] = {...data}
+    //   }
+    // },
     
     // 删除用户
-    [DELETE_USER](state: IUserAbout, index: number){
-      const arr = [...state.tableData.list]
-      arr.splice(index, 1)
-      state.tableData.list = arr
-    },
+    // [DELETE_USER](state: IUserAbout, index: number){
+    //   const arr = [...state.tableData.list]
+    //   arr.splice(index, 1)
+    //   state.tableData.list = arr
+    // },
     
     // 更新paginationData
     [SET_PAGEDATA](state: IUserAbout, data: IPagination){
