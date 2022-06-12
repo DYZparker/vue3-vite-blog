@@ -12,9 +12,9 @@
   >
     <!-- 插槽 -->
     <template #default ="{data}: any">
-      <el-tag :color= data.color effect="dark">
+      <el-link :color= data.color effect="dark">
         {{ data.color }}
-      </el-tag>
+      </el-link>
     </template>
   </DataTableBlock>
   <PaginationBlock 
@@ -45,80 +45,93 @@ import PaginationBlock from '../components/PaginationBlock.vue'
 import DialogBlock from '../components/DialogBlock.vue'
 import { useStore } from '../store'
 import { IPagination } from '../types/common'
-import { ITableRowData } from '../types/tag'
+import { ITableRowData } from '../types/link'
 
 const store = useStore()
-const tagAbout = store.state.tagAbout
+const linkAbout = store.state.linkAbout
 const tableMenu = [
   { 
-    title: '标签1',
-    propName: 'tagName',
+    title: '链接名称',
+    propName: 'linkName',
     isEdit: true,
     hasSlot: false,
     width: 180
   },
   { 
-    title: '颜色',
-    propName: 'color',
+    title: '链接地址',
+    propName: 'href',
     isEdit: true,
-    hasSlot: true,
+    hasSlot: false,
+    width: 180
+  },
+  { 
+    title: '图标地址',
+    propName: 'img',
+    isEdit: true,
+    hasSlot: false,
     width: 180
   }
 ]
 
 /* SearchBlock组件start */
 const searchMsg = {
-  searchName: 'tagName',
-  placeholderName: '标签'
+  searchName: 'linkName',
+  placeholderName: '链接'
 }
 const initEditData = {
   index: -1,
   data: {
     _id: 0,
-    tagName: '',
-    color: '#000000'
+    linkName: '',
+    href: '',
+    img: ''
   }
 }
-const getData = (data: IPagination) => store.dispatch('tagAbout/getTagsData', data)
-const addNew = () => store.dispatch('tagAbout/editDialog', initEditData)
+const getData = (data: IPagination) => store.dispatch('linkAbout/getLinksData', data)
+const addNew = () => store.dispatch('linkAbout/editDialog', initEditData)
 /* SearchBlock组件end */
 
 /* DataTableBlock组件start */
-const tableList = computed(() => tagAbout.tableData.list)
+const tableList = computed(() => linkAbout.tableData.list)
 if(tableList.value.length === 0) {
-  store.dispatch('tagAbout/getTagsData')
+  store.dispatch('linkAbout/getLinksData')
 }
-const edit = (index:number, data: ITableRowData) => store.dispatch('tagAbout/editDialog', { index, data })
-const remove = (index:number, data: ITableRowData) => store.dispatch('tagAbout/removeTag', { index, data })
+const edit = (index:number, data: ITableRowData) => store.dispatch('linkAbout/editDialog', { index, data })
+const remove = (index:number, data: ITableRowData) => store.dispatch('linkAbout/removeLink', { index, data })
 /* DataTableBlock组件end */
 
 /* PaginationBlock组件start */
-const paginationData = computed(() => tagAbout.paginationData)
-const total = computed(() => tagAbout.tableData.total)
-const changePage = (data: IPagination) => store.dispatch('tagAbout/getTagsData', data)
+const paginationData = computed(() => linkAbout.paginationData)
+const total = computed(() => linkAbout.tableData.total)
+const changePage = (data: IPagination) => store.dispatch('linkAbout/getLinksData', data)
 /* PaginationBlock组件end */
 
 /* DialogBlock组件start */
 const rules = {
-  tagName: [
-    { required: true, message: '请输入标签名', trigger: 'blur' },
+  linkName: [
+    { required: true, message: '请输入链接名', trigger: 'blur' },
     { min: 1, max: 24, message: '账号长度需要在1~24之间', trigger: 'blur' }
+  ],
+  href: [
+    { required: true, message: '请输入链接地址', trigger: 'blur' },
+    { min: 1, max: 124, message: '账号长度需要在1~124之间', trigger: 'blur' }
   ]
 }
 let dialogData = reactive({
   index: -1,
   data: {
     _id: 0,
-    tagName: '',
-    color: ''
+    linkName: '',
+    href: '',
+    img: ''
   }
 })
 watchEffect(() => {
-  const obj = tagAbout.editData
+  const obj = linkAbout.editData
   /* 
     拷贝对象，用JSON方法或者解构赋值都会丢失响应性，只能用for循环，且不能深拷贝
     1.  dialogData = reactive(JSON.parse(JSON.stringify(obj)))
-    2.  const {...a} = tagAbout.editData
+    2.  const {...a} = linkAbout.editData
         dialogData = a 
   */
   dialogData.index = obj.index
@@ -126,10 +139,10 @@ watchEffect(() => {
     dialogData.data[item] = obj.data[item]
   }
 })
-const Visible = computed(() => tagAbout.dialogVisible)
+const Visible = computed(() => linkAbout.dialogVisible)
 const isEditTableMenu = tableMenu.filter(item => item.isEdit === true)
-const closeDialog = () => store.commit('tagAbout/DIALOG_TRIGGER', false)
-const editDialog = () => store.dispatch('tagAbout/editTag', dialogData)
+const closeDialog = () => store.commit('linkAbout/DIALOG_TRIGGER', false)
+const editDialog = () => store.dispatch('linkAbout/editLink', dialogData)
 /* DialogBlock组件end */
 </script>
 

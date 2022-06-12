@@ -12,6 +12,9 @@
     "esModuleInterop": true,
     "lib": ["esnext", "dom"]
   },
+  "vueCompilerOptions": {
+    "experimentalSuppressInvalidJsxElementTypeErrors": true
+  },
   "include": [
     "src/**/*.ts", 
     "src/**/*.d.ts", 

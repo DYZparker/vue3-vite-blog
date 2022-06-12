@@ -13,7 +13,17 @@
       :prop="item.propName" 
       :label="item.title" 
       :min-width="item.width" 
-    />
+    >
+      <!-- 判断可编辑项是否用插槽的样式展示 -->
+      <template #default="scope">
+        <div v-if="item.hasSlot">
+          <slot :data="scope.row"></slot>
+        </div>
+        <div v-else>
+          {{scope.row[item.propName]}}
+        </div>
+      </template>
+    </el-table-column>
     <el-table-column label="添加时间" min-width="180">
       <template #default="scope">
         {{initDate(scope.row)}}

@@ -1,5 +1,7 @@
 import { IArticleAbout } from './article'
 import { IUserAbout } from './user'
+import { ITagAbout } from './tag'
+import { ILinkAbout } from './link'
 
 export interface ITableMenu {
   title: string;
@@ -16,6 +18,8 @@ export interface IPagination {
 }
 
 export interface IState {
+  tagAbout: ITagAbout
+  linkAbout: ILinkAbout
   userAbout: IUserAbout
   articleAbout: IArticleAbout
 }

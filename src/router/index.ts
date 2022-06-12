@@ -5,10 +5,10 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 const Layout = () => import('../components/Layout.vue')
 const Home = () => import('../views/Home.vue')
-// const Manage = () => import('../views/Manage.vue')
+const SiderManage = () => import('../views/SiderManage.vue')
 // const Topic = () => import('../views/Topic')
 const Tag = () => import('../views/Tag.vue')
-// const Link = () => import('../views/Link')
+const Link = () => import('../views/Link.vue')
 const Articles = () => import('../views/Articles.vue')
 const ArticleManage = () => import('../views/ArticleManage.vue')
 const ArticleEdit = () => import('../views/ArticleEdit.vue')
@@ -46,10 +46,10 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: '/manage',
-        component: Tag,
+        path: '/sider',
+        component: SiderManage,
         meta: {
-          title: '页面管理',
+          title: '侧栏管理',
           showlevel: 1,
           requiresAuth: true
         },
@@ -65,7 +65,7 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: 'link',
-            component: Tag,
+            component: Link,
             meta: {
               title: '链接',
               showlevel: 2,

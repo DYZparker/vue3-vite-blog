@@ -9,7 +9,12 @@
     :tableList="tableList" 
     @edit="edit" 
     @remove="remove" 
-  />
+  >
+    <!-- 插槽 -->
+    <template #default ="{data}: any">
+      {{ data.isAdmin ? '管理员' : '普通用户'}}
+    </template>
+  </DataTableBlock>
   <PaginationBlock 
     :total="total" 
     :paginationData="paginationData" 
@@ -24,13 +29,11 @@
     @editDialog="editDialog" 
   >
     <!-- 插槽 -->
-    <template #default ="{data}">
-      <el-form-item  :label="data.title">
-        <el-radio-group v-model="data.isAdmin">
-          <el-radio :label="true">管理员</el-radio>
-          <el-radio :label="false">普通用户</el-radio>
-        </el-radio-group>
-      </el-form-item>
+    <template #default ="{data}: any">
+      <el-radio-group v-model="data.isAdmin">
+        <el-radio :label="true">管理员</el-radio>
+        <el-radio :label="false">普通用户</el-radio>
+      </el-radio-group>
     </template>
   </DialogBlock>
 </template>
@@ -63,7 +66,7 @@ const tableMenu = [
     width: 180
   },
   { 
-    title: '管理员',
+    title: '权限',
     propName: 'isAdmin',
     isEdit: true,
     hasSlot: true,

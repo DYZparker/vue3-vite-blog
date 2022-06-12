@@ -12,10 +12,10 @@
     <el-sub-menu index="/manage">
       <template #title>
         <i class="el-icon-menu"></i>
-        <span>页面管理</span>
+        <span>侧栏管理</span>
       </template>
-      <el-menu-item index="/tag">标签</el-menu-item>
-      <el-menu-item index="1-3">链接</el-menu-item>
+      <el-menu-item index="/sider/tag">标签</el-menu-item>
+      <el-menu-item index="/sider/link">链接</el-menu-item>
     </el-sub-menu>
     <el-sub-menu index="2">
       <template #title>
