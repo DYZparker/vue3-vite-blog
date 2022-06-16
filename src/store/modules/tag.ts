@@ -3,6 +3,7 @@ import { IPagination, IState } from '../../types/common'
 import { IEditData, ITagAbout, ITableData } from '../../types/tag'
 import {  getTags, createTag, setTag, deleteTag } from '../../http/tag'
 import { DIALOG_TRIGGER, SET_EDITDATA, SET_TABLEDATA, SET_PAGEDATA } from '../mutation_types'
+import { showMessage } from '../../utils/common'
 
 const tagModule: Module<ITagAbout, IState> = {
   namespaced:true,
@@ -43,47 +44,27 @@ const tagModule: Module<ITagAbout, IState> = {
     
     // 提交dialog，先判断是新增还是编辑再发送到服务器
     async editTag(context: any, data: IEditData){
-      const loading = ElLoading.service({
-        lock: true,
-        text: 'Loading',
-        background: 'rgba(0, 0, 0, 0.7)',
-      })
-      // 提交数据loading加载，成功后提示信息，更改数据，关闭dialog
-      const showMessage = (msg: string) => {
-        context.dispatch('getTagsData')
-        context.commit('DIALOG_TRIGGER', false)
-        ElMessage({
-          message: msg,
-          type: 'success',
-        })
+      // 包装showMessage函数
+      const middleFn = async (fn: Function, data: any) => {
+        const res = await showMessage(fn, data)
+        if(res) {
+          context.dispatch('getTagsData')
+          context.commit('DIALOG_TRIGGER', false)
+        }
       }
       // 用dialog数据是否有序号来判断是新增还是编辑
       if(data.index === -1) {
-        const res = await createTag(data.data)
-        loading.close()
-        res && showMessage(res.data.message)
+        middleFn(createTag, data.data)
       }else{
-        const res = await setTag(data.data)
-        loading.close()
-        res && showMessage(res.data.message)
+        middleFn(setTag, data.data)
       }
     },
     
     // 删除标签
     async removeTag(context: any, data: IEditData){
-      const loading = ElLoading.service({
-        lock: true,
-        text: 'Loading',
-        background: 'rgba(0, 0, 0, 0.7)',
-      })
-      const res = await deleteTag(data.data)
-      loading.close()
-      if(res){
+      const res = await showMessage(deleteTag, data.data)
+      if(res) {
         context.dispatch('getTagsData')
-        ElMessage({
-          message: res.data.message,
-          type: 'success',
-        })
       }
     },
   },

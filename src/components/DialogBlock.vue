@@ -21,10 +21,10 @@
       >
         <!-- 判断可编辑项是否用插槽的样式展示，默认用input -->
         <div v-if="item.hasSlot">
-          <slot :data="data"></slot>
+          <slot :name="item.propName" :data="data"></slot>
         </div>
         <div v-else>
-          <el-input v-model="data[item.propName]"></el-input>
+          <el-input v-model.trim="data[item.propName]"></el-input>
         </div>
       </el-form-item>
     </el-form>
@@ -41,46 +41,44 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import type { ElForm } from 'element-plus'
-  import { ITableMenu } from '../types/common'
+import { ref } from 'vue'
+import { FormInstance, ITableMenu } from '../types/common'
 
-  defineProps<{
-    Visible: Boolean
-    rules: Object,
-    isEditTableMenu: Array<ITableMenu>,
-    data: Object
-  }>()
-  const emit  = defineEmits(['closeDialog', 'editDialog'])
-  type FormInstance = InstanceType<typeof ElForm>
-  const ruleFormRef = ref<FormInstance>()
-  const labelPosition = ref('right')
-  
-  const closeDialog = () => emit('closeDialog')
-  const editDialog = async (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    await formEl.validate((valid, fields) => {
-      if (valid) {
-        emit('editDialog')
-      } else {
-        console.log('error submit!', fields)
-      }
-    })
-  }
-  const handleClose = () => {
-    ElMessageBox.confirm('确定要取消编辑吗？')
-      .then(() => closeDialog())
-      .catch(() => {}
-    )
-  }
+defineProps<{
+  Visible: Boolean
+  rules: Object,
+  isEditTableMenu: Array<ITableMenu>,
+  data: Object
+}>()
+const emit  = defineEmits(['closeDialog', 'editDialog'])
+const ruleFormRef = ref<FormInstance>()
+const labelPosition = ref('right')
+
+const closeDialog = () => emit('closeDialog')
+const editDialog = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      emit('editDialog')
+    } else {
+      console.log('error submit!', fields)
+    }
+  })
+}
+const handleClose = () => {
+  ElMessageBox.confirm('确定要取消编辑吗？')
+    .then(() => closeDialog())
+    .catch(() => {}
+  )
+}
 </script>
 
 <style scoped lang="scss">
-  .form-inline {
-    padding: 20px 20px 0 20px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  }
-  .dialog-footer button:first-child {
-    margin-right: 10px;
-  }
+.form-inline {
+  padding: 20px 20px 0 20px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+.dialog-footer button:first-child {
+  margin-right: 10px;
+}
 </style>

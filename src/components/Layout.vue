@@ -1,9 +1,3 @@
-<script setup lang="ts">
-import Navbar from './Navbar.vue';
-import Header from './Header.vue';
-
-</script>
-
 <template>
   <el-container>
     <el-header><Header /></el-header>
@@ -15,6 +9,11 @@ import Header from './Header.vue';
     </el-container>
   </el-container>
 </template>
+
+<script setup lang="ts">
+import Navbar from './Navbar.vue';
+import Header from './Header.vue';
+</script>
 
 <style scoped lang="scss">
 .el-header {

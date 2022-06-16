@@ -3,6 +3,7 @@ import { IPagination, IState } from '../../types/common'
 import { IEditData, ILinkAbout, ITableData } from '../../types/link'
 import {  getLinks, createLink, setLink, deleteLink } from '../../http/link'
 import { DIALOG_TRIGGER, SET_EDITDATA, SET_TABLEDATA, SET_PAGEDATA } from '../mutation_types'
+import { showMessage } from '../../utils/common'
 
 const linkModule: Module<ILinkAbout, IState> = {
   namespaced:true,
@@ -44,47 +45,27 @@ const linkModule: Module<ILinkAbout, IState> = {
     
     // 提交dialog，先判断是新增还是编辑再发送到服务器
     async editLink(context: any, data: IEditData){
-      const loading = ElLoading.service({
-        lock: true,
-        text: 'Loading',
-        background: 'rgba(0, 0, 0, 0.7)',
-      })
-      // 提交数据loading加载，成功后提示信息，更改数据，关闭dialog
-      const showMessage = (msg: string) => {
-        context.dispatch('getLinksData')
-        context.commit('DIALOG_TRIGGER', false)
-        ElMessage({
-          message: msg,
-          type: 'success',
-        })
+      // 包装showMessage函数
+      const middleFn = async (fn: Function, data: any) => {
+        const res = await showMessage(fn, data)
+        if(res) {
+          context.dispatch('getLinksData')
+          context.commit('DIALOG_TRIGGER', false)
+        }
       }
       // 用dialog数据是否有序号来判断是新增还是编辑
       if(data.index === -1) {
-        const res = await createLink(data.data)
-        loading.close()
-        res && showMessage(res.data.message)
+        middleFn(createLink, data.data)
       }else{
-        const res = await setLink(data.data)
-        loading.close()
-        res && showMessage(res.data.message)
+        middleFn(setLink, data.data)
       }
     },
     
     // 删除链接
     async removeLink(context: any, data: IEditData){
-      const loading = ElLoading.service({
-        lock: true,
-        text: 'Loading',
-        background: 'rgba(0, 0, 0, 0.7)',
-      })
-      const res = await deleteLink(data.data)
-      loading.close()
-      if(res){
+      const res = await showMessage(deleteLink, data.data)
+      if(res) {
         context.dispatch('getLinksData')
-        ElMessage({
-          message: res.data.message,
-          type: 'success',
-        })
       }
     },
   },

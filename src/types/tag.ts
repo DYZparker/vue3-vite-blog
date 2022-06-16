@@ -22,3 +22,14 @@ export interface ITagAbout {
   editData: IEditData;
   paginationData: IPagination;
 }
+
+export class InitTagData {
+  dialogData: IEditData = {
+    index: -1,
+    data: {
+      _id: 0,
+      tagName: '',
+      color: ''
+    }
+  }
+}

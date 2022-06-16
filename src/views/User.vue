@@ -1,17 +1,20 @@
 <template>
   <SearchBlock 
-    :searchMsg="searchMsg" 
+    :isAddNew="false"
+    :searchMsg="searchUserMsg" 
     @getData="getData" 
-    @addNew="addNew" 
   />
   <DataTableBlock 
-    :tableMenu="tableMenu" 
+    :tableMenu="userTableMenu" 
     :tableList="tableList" 
     @edit="edit" 
     @remove="remove" 
   >
     <!-- 插槽 -->
-    <template #default ="{data}: any">
+    <template #gender ="{data}: any">
+      {{ data.gender ? '男' : '女'}}
+    </template>
+    <template #isAdmin ="{data}: any">
       {{ data.isAdmin ? '管理员' : '普通用户'}}
     </template>
   </DataTableBlock>
@@ -22,14 +25,20 @@
   />
   <DialogBlock
     :Visible="Visible"
-    :rules="rules" 
+    :rules="userRules" 
     :isEditTableMenu="isEditTableMenu" 
     :data="dialogData.data"
     @closeDialog="closeDialog" 
     @editDialog="editDialog" 
   >
     <!-- 插槽 -->
-    <template #default ="{data}: any">
+    <template #gender ="{data}: any">
+      <el-radio-group v-model="data.gender">
+        <el-radio :label="0">女</el-radio>
+        <el-radio :label="1">男</el-radio>
+      </el-radio-group>
+    </template>
+    <template #isAdmin ="{data}: any">
       <el-radio-group v-model="data.isAdmin">
         <el-radio :label="true">管理员</el-radio>
         <el-radio :label="false">普通用户</el-radio>
@@ -40,56 +49,21 @@
 
 <script setup lang="ts">
 import { computed, reactive, watchEffect } from 'vue'
+import { useStore } from '../store'
 import SearchBlock from '../components/SearchBlock.vue'
 import DataTableBlock from '../components/DataTableBlock.vue'
 import PaginationBlock from '../components/PaginationBlock.vue'
 import DialogBlock from '../components/DialogBlock.vue'
-import { useStore } from '../store'
 import { IPagination } from '../types/common'
-import { ITableRowData } from '../types/user'
+import { ITableRowData, InitUserData } from '../types/user'
+import { userTableMenu, searchUserMsg, userRules } from '../utils/constant'
 
+const { dialogData } = reactive(new InitUserData)
 const store = useStore()
 const userAbout = store.state.userAbout
-const tableMenu = [
-  { 
-    title: '账号',
-    propName: 'username',
-    isEdit: true,
-    hasSlot: false,
-    width: 180
-  },
-  { 
-    title: '密码',
-    propName: 'password',
-    isEdit: true,
-    hasSlot: false,
-    width: 180
-  },
-  { 
-    title: '权限',
-    propName: 'isAdmin',
-    isEdit: true,
-    hasSlot: true,
-    width: 180
-  }
-]
 
 /* SearchBlock组件start */
-const searchMsg = {
-  searchName: 'username',
-  placeholderName: '账号'
-}
-const initEditData = {
-  index: -1,
-  data: {
-    _id: 0,
-    username: '',
-    password: '',
-    isAdmin: false
-  }
-}
 const getData = (data: IPagination) => store.dispatch('userAbout/getUsersData', data)
-const addNew = () => store.dispatch('userAbout/editDialog', initEditData)
 /* SearchBlock组件end */
 
 /* DataTableBlock组件start */
@@ -108,25 +82,6 @@ const changePage = (data: IPagination) => store.dispatch('userAbout/getUsersData
 /* PaginationBlock组件end */
 
 /* DialogBlock组件start */
-const rules = {
-  username: [
-    { required: true, message: '请输入账号', trigger: 'blur' },
-    { min: 4, max: 24, message: '账号长度需要在4~24之间', trigger: 'blur' }
-  ],
-  password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 4, max: 24, message: '密码长度需要在4~24之间', trigger: 'blur' }
-  ]
-}
-let dialogData = reactive({
-  index: -1,
-  data: {
-    _id: 0,
-    username: '',
-    password: '',
-    isAdmin: false
-  }
-})
 watchEffect(() => {
   const obj = userAbout.editData
   /* 
@@ -141,20 +96,20 @@ watchEffect(() => {
   }
 })
 const Visible = computed(() => userAbout.dialogVisible)
-const isEditTableMenu = tableMenu.filter(item => item.isEdit === true)
+const isEditTableMenu = userTableMenu.filter(item => item.isEdit === true)
 const closeDialog = () => store.commit('userAbout/DIALOG_TRIGGER', false)
 const editDialog = () => store.dispatch('userAbout/editUser', dialogData)
 /* DialogBlock组件end */
 </script>
 
 <style scoped lang="scss">
-  .el-table {
-    overflow: auto;
-  }
-  .el-table::before {
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      height: 0px;
-  }
+.el-table {
+  overflow: auto;
+}
+.el-table::before {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 0px;
+}
 </style>

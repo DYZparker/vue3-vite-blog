@@ -16,13 +16,13 @@ export function getUser() {
     return JSON.parse(window.localStorage.getItem(USER_KEY) || '{}')
 }
 
-// // 保存用户信息
-// export function setUser(user) {
-//     return window.localStorage.setItem(USER_KEY, JSON.stringify(user))
-// }
+// 保存用户信息
+export function setUser(user: string) {
+    return window.localStorage.setItem(USER_KEY, JSON.stringify(user))
+}
 
-// // 移除用户信息
-// export function removeUser() {
-//     window.localStorage.removeItem(TOKEN_KEY)
-//     window.localStorage.removeItem(USER_KEY)
-// }
+// 移除用户信息
+export function removeUser() {
+    window.localStorage.removeItem(TOKEN_KEY)
+    window.localStorage.removeItem(USER_KEY)
+}

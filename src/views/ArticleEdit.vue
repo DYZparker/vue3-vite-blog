@@ -17,10 +17,12 @@
     </el-form-item>
     <el-form-item label="标签分类" prop="tags">
       <el-checkbox-group v-model="ruleForm.tags">
-        <el-checkbox label="react" name="type" />
-        <el-checkbox label="vue" name="type" />
-        <el-checkbox label="node" name="type" />
-        <el-checkbox label="html" name="type" />
+        <el-checkbox 
+          v-for="item in tagList" 
+          :key="item._id"
+          :label="item.tagName" 
+          name="type" 
+        />
       </el-checkbox-group>
     </el-form-item>
     <el-form-item label="文章内容" prop="content">
@@ -37,15 +39,14 @@
 
 <script setup lang="ts">
 import { reactive, ref, onMounted, computed } from 'vue'
-import type { ElForm } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
+import { FormInstance } from '../types/common'
 import { useStore } from '../store'
 
 const route = useRoute()
 const router = useRouter()
 const store = useStore()
-const articleAbout = store.state.articleAbout
-type FormInstance = InstanceType<typeof ElForm>
+const {articleAbout, tagAbout} = store.state
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive({
     _id: 0,
@@ -90,6 +91,11 @@ const rules = {
   ]
 }
 const tableList = computed(() => articleAbout.tableData.list)
+const tagList = computed(() => tagAbout.tableData.list)
+if(tagList.value.length === 0) {
+  store.dispatch('tagAbout/getTagsData')
+}
+
 onMounted(() => {
   const num = Number(route.query.index)
   if(route.query.index && tableList.value.length > 0) {

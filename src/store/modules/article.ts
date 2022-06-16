@@ -3,6 +3,7 @@ import { IPagination, IState } from '../../types/common'
 import { IEditData, IArticleAbout, ITableData } from '../../types/article'
 import {  getArticleList, addArticle, setArticle, deleteArticle } from '../../http/article'
 import { SET_TABLEDATA, SET_PAGEDATA, } from '../mutation_types'
+import { showMessage } from '../../utils/common'
 
 const articleModule: Module<IArticleAbout, IState> = {
   namespaced:true,
@@ -28,46 +29,26 @@ const articleModule: Module<IArticleAbout, IState> = {
     
     // 提交编辑，先判断是新增还是编辑再发送到服务器
     async editArticle(context: any, data: IEditData){
-      const loading = ElLoading.service({
-        lock: true,
-        text: 'Loading',
-        background: 'rgba(0, 0, 0, 0.7)',
-      })
-      // 提交数据loading加载，成功后提示信息，更改数据，关闭dialog
-      const showMessage = (msg: string) => {
-        context.dispatch('getArticleData')
-        ElMessage({
-          message: msg,
-          type: 'success',
-        })
+      // 包装showMessage函数
+      const middleFn = async (fn: Function, data: any) => {
+        const res = await showMessage(fn, data)
+        if(res) {
+          context.dispatch('getArticleData')
+        }
       }
-      // 用数据是否有序号来判断是新增还是编辑
-      if(!data.index) {
-        const res = await addArticle(data.data)
-        loading.close()
-        res && showMessage(res.data.message)
+      // 用dialog数据是否有序号来判断是新增还是编辑
+      if(data.index) {
+        middleFn(setArticle, data.data)
       }else{
-        const res = await setArticle(data.data)
-        loading.close()
-        res && showMessage(res.data.message)
+        middleFn(addArticle, data.data)
       }
     },
     
     // 删除文章
     async removeUser(context: any, data: IEditData){
-      const loading = ElLoading.service({
-        lock: true,
-        text: 'Loading',
-        background: 'rgba(0, 0, 0, 0.7)',
-      })
-      const res = await deleteArticle(data.data)
-      loading.close()
-      if(res){
+      const res = await showMessage(deleteArticle, data.data)
+      if(res) {
         context.dispatch('getArticleData')
-        ElMessage({
-          message: res.data.message,
-          type: 'success',
-        })
       }
     },
   },

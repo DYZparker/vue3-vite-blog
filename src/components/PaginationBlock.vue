@@ -13,30 +13,30 @@
 </template>
 
 <script setup lang="ts">
-  import { reactive, watchEffect } from 'vue'
-  import { IPagination } from '../types/common'
+import { reactive, watchEffect } from 'vue'
+import { IPagination } from '../types/common'
 
-  const props = defineProps<{
-    total: number,
-    paginationData: IPagination
-  }>()
-  const emit  = defineEmits(['changePage'])
-  const pagination = reactive({
-    page: 1,
-    size: 10,
-    search: {}
-  })
-  watchEffect(() => {
-    for(let item in pagination){
-      pagination[item] = props.paginationData[item]
-    }
-  })
-  const handleChange = () => emit('changePage', pagination)
+const props = defineProps<{
+  total: number,
+  paginationData: IPagination
+}>()
+const emit  = defineEmits(['changePage'])
+const pagination = reactive({
+  page: 1,
+  size: 10,
+  search: {}
+})
+watchEffect(() => {
+  for(let item in pagination){
+    pagination[item] = props.paginationData[item]
+  }
+})
+const handleChange = () => emit('changePage', pagination)
 </script>
 
 <style scoped lang="scss">
-  .pagination-block {
-    margin-top: 10px;
-    text-align: center;
-  }
+.pagination-block {
+  margin-top: 10px;
+  text-align: center;
+}
 </style>

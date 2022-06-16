@@ -23,3 +23,15 @@ export interface ILinkAbout {
   editData: IEditData;
   paginationData: IPagination;
 }
+
+export class InitLinkData {
+  dialogData: IEditData = {
+    index: -1,
+    data: {
+      _id: 0,
+      linkName: '',
+      href: '',
+      img: ''
+    }
+  }
+}

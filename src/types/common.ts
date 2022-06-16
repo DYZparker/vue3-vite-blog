@@ -1,8 +1,10 @@
+import type { ElForm } from 'element-plus'
 import { IArticleAbout } from './article'
 import { IUserAbout } from './user'
 import { ITagAbout } from './tag'
 import { ILinkAbout } from './link'
 
+export type FormInstance = InstanceType<typeof ElForm>
 export interface ITableMenu {
   title: string;
   propName: string;

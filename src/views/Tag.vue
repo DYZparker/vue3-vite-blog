@@ -1,17 +1,18 @@
 <template>
   <SearchBlock 
-    :searchMsg="searchMsg" 
+    :isAddNew="true"
+    :searchMsg="searchTagMsg" 
     @getData="getData" 
     @addNew="addNew" 
   />
   <DataTableBlock 
-    :tableMenu="tableMenu" 
+    :tableMenu="tagTableMenu" 
     :tableList="tableList" 
     @edit="edit" 
     @remove="remove" 
   >
     <!-- 插槽 -->
-    <template #default ="{data}: any">
+    <template #color ="{data}: any">
       <el-tag :color= data.color effect="dark">
         {{ data.color }}
       </el-tag>
@@ -24,14 +25,14 @@
   />
   <DialogBlock
     :Visible="Visible"
-    :rules="rules" 
+    :rules="tagRules" 
     :isEditTableMenu="isEditTableMenu" 
     :data="dialogData.data"
     @closeDialog="closeDialog" 
     @editDialog="editDialog" 
   >
     <!-- 插槽 -->
-    <template #default ="{data}: any">
+    <template #color ="{data}: any">
       <el-color-picker v-model="data.color"></el-color-picker>
     </template>
   </DialogBlock>
@@ -39,48 +40,22 @@
 
 <script setup lang="ts">
 import { computed, reactive, watchEffect } from 'vue'
+import { useStore } from '../store'
 import SearchBlock from '../components/SearchBlock.vue'
 import DataTableBlock from '../components/DataTableBlock.vue'
 import PaginationBlock from '../components/PaginationBlock.vue'
 import DialogBlock from '../components/DialogBlock.vue'
-import { useStore } from '../store'
 import { IPagination } from '../types/common'
-import { ITableRowData } from '../types/tag'
+import { ITableRowData, InitTagData } from '../types/tag'
+import { tagTableMenu, searchTagMsg, initTagEditData, tagRules } from '../utils/constant'
 
+const { dialogData } = reactive(new InitTagData)
 const store = useStore()
 const tagAbout = store.state.tagAbout
-const tableMenu = [
-  { 
-    title: '标签1',
-    propName: 'tagName',
-    isEdit: true,
-    hasSlot: false,
-    width: 180
-  },
-  { 
-    title: '颜色',
-    propName: 'color',
-    isEdit: true,
-    hasSlot: true,
-    width: 180
-  }
-]
 
 /* SearchBlock组件start */
-const searchMsg = {
-  searchName: 'tagName',
-  placeholderName: '标签'
-}
-const initEditData = {
-  index: -1,
-  data: {
-    _id: 0,
-    tagName: '',
-    color: '#000000'
-  }
-}
 const getData = (data: IPagination) => store.dispatch('tagAbout/getTagsData', data)
-const addNew = () => store.dispatch('tagAbout/editDialog', initEditData)
+const addNew = () => store.dispatch('tagAbout/editDialog', initTagEditData)
 /* SearchBlock组件end */
 
 /* DataTableBlock组件start */
@@ -99,48 +74,28 @@ const changePage = (data: IPagination) => store.dispatch('tagAbout/getTagsData',
 /* PaginationBlock组件end */
 
 /* DialogBlock组件start */
-const rules = {
-  tagName: [
-    { required: true, message: '请输入标签名', trigger: 'blur' },
-    { min: 1, max: 24, message: '账号长度需要在1~24之间', trigger: 'blur' }
-  ]
-}
-let dialogData = reactive({
-  index: -1,
-  data: {
-    _id: 0,
-    tagName: '',
-    color: ''
-  }
-})
 watchEffect(() => {
   const obj = tagAbout.editData
-  /* 
-    拷贝对象，用JSON方法或者解构赋值都会丢失响应性，只能用for循环，且不能深拷贝
-    1.  dialogData = reactive(JSON.parse(JSON.stringify(obj)))
-    2.  const {...a} = tagAbout.editData
-        dialogData = a 
-  */
   dialogData.index = obj.index
   for(let item in dialogData.data){
     dialogData.data[item] = obj.data[item]
   }
 })
 const Visible = computed(() => tagAbout.dialogVisible)
-const isEditTableMenu = tableMenu.filter(item => item.isEdit === true)
+const isEditTableMenu = tagTableMenu.filter(item => item.isEdit === true)
 const closeDialog = () => store.commit('tagAbout/DIALOG_TRIGGER', false)
 const editDialog = () => store.dispatch('tagAbout/editTag', dialogData)
 /* DialogBlock组件end */
 </script>
 
 <style scoped lang="scss">
-  .el-table {
-    overflow: auto;
-  }
-  .el-table::before {
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      height: 0px;
-  }
+.el-table {
+  overflow: auto;
+}
+.el-table::before {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 0px;
+}
 </style>

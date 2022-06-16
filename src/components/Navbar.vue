@@ -5,10 +5,6 @@
       <i class="el-icon-s-home"></i>
       <span>首页</span>
     </el-menu-item>
-    <el-menu-item index="4">
-      <i class="el-icon-document"></i>
-      <span>基本信息</span>
-    </el-menu-item>
     <el-sub-menu index="/manage">
       <template #title>
         <i class="el-icon-menu"></i>
@@ -32,20 +28,9 @@
   </el-menu>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, reactive, toRefs } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-
-export default defineComponent({
-  setup() {
-    const route = useRoute()
-    const activemenu = route.path
-    return {
-      activemenu
-    }
-  }
-})
-
+<script setup lang="ts">
+import { useRoute } from 'vue-router'
+const activemenu = useRoute().path
 </script>
 
 <style scoped lang="scss">

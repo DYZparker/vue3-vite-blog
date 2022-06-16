@@ -17,7 +17,7 @@
       <!-- 判断可编辑项是否用插槽的样式展示 -->
       <template #default="scope">
         <div v-if="item.hasSlot">
-          <slot :data="scope.row"></slot>
+          <slot :name="item.propName" :data="scope.row"></slot>
         </div>
         <div v-else>
           {{scope.row[item.propName]}}
@@ -29,7 +29,7 @@
         {{initDate(scope.row)}}
       </template>
     </el-table-column>
-    <el-table-column label="操作" min-width="180">
+    <el-table-column v-if="user.isAdmin" label="操作" min-width="180">
       <template #default="scope">
         <el-button 
           size="small" 
@@ -46,35 +46,34 @@
 </template>
 
 <script setup lang="ts">
-  import moment from 'moment'
-  import { ITableMenu } from '../types/common'
+import { computed } from 'vue'
+import { ITableMenu } from '../types/common'
+import { initDate } from '../utils/common'
+import { getUser } from '../utils/auth'
+import Crypto from '../utils/crypto'
 
-  defineProps<{
-    tableMenu: Array<ITableMenu>,
-    tableList: Array<any>
-  }>()
-  const emit  = defineEmits(['edit', 'remove'])
-  const cellStyle = () => "text-align:center"
-  const rowClass = () => "text-align:center"
-  // 将数据库自动注册的id转为日期
-  const initDate = (data: any)=>{
-		// 截取_id的前8位十六进制时间戳转换为十进制
-		const timeStr = data._id.toString().slice(0, 8)
-    return moment(parseInt(timeStr, 16)*1000).format('YYYY-MM-DD')
-  }
-  const handleEdit = (index:number, data: any) => emit('edit', index, data)
-  const handleDelete = (index:number, data: any) => {
-    ElMessageBox.confirm('确定要删除此数据吗？')
-      .then(() => emit('remove', index, data))
-      .catch(() => {}
-    )
-  }
+const myCrypto = new Crypto()
+const user = computed(() => myCrypto.decryptCBC(getUser()))
+defineProps<{
+  tableMenu: Array<ITableMenu>,
+  tableList: Array<any>
+}>()
+const emit  = defineEmits(['edit', 'remove'])
+const cellStyle = () => "text-align:center"
+const rowClass = () => "text-align:center"
+const handleEdit = (index:number, data: any) => emit('edit', index, data)
+const handleDelete = (index:number, data: any) => {
+  ElMessageBox.confirm('确定要删除此数据吗？')
+    .then(() => emit('remove', index, data))
+    .catch(() => {}
+  )
+}
 </script>
 
 <style scoped lang="scss">
-  .el-table {
-    margin-top: 20px;
-    background: #FFF;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  }
+.el-table {
+  margin-top: 20px;
+  background: #FFF;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
 </style>

@@ -1,12 +1,11 @@
-import Vue from 'vue'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-// import { getToken, removeUser } from '@/utils/auth'
-// import { getUserInfoApi} from '@/api/login'
+import { checkToken } from '../http/user'
+import { getUser, removeUser } from '../utils/auth'
+import Crypto from '../utils/crypto'
 
 const Layout = () => import('../components/Layout.vue')
 const Home = () => import('../views/Home.vue')
 const SiderManage = () => import('../views/SiderManage.vue')
-// const Topic = () => import('../views/Topic')
 const Tag = () => import('../views/Tag.vue')
 const Link = () => import('../views/Link.vue')
 const Articles = () => import('../views/Articles.vue')
@@ -15,6 +14,7 @@ const ArticleEdit = () => import('../views/ArticleEdit.vue')
 const User = () => import('../views/User.vue')
 const Login = () => import('../views/Login.vue')
 
+const myCrypto = new Crypto()
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/login',
@@ -32,17 +32,7 @@ const routes: Array<RouteRecordRaw> = [
         component: Home,
         meta: {
           title: '首页',
-          showlevel: 1,
-          requiresAuth: true
-        }
-      },
-      {
-        path: '/auth',
-        component: Tag,
-        meta: {
-          title: '基本信息',
-          showlevel: 1,
-          requiresAuth: true
+          requiresAuth: false
         }
       },
       {
@@ -50,8 +40,7 @@ const routes: Array<RouteRecordRaw> = [
         component: SiderManage,
         meta: {
           title: '侧栏管理',
-          showlevel: 1,
-          requiresAuth: true
+          requiresAuth: false
         },
         children: [
           {
@@ -59,8 +48,7 @@ const routes: Array<RouteRecordRaw> = [
             component: Tag,
             meta: {
               title: '标签',
-              showlevel: 2,
-              requiresAuth: true
+              requiresAuth: false
             }
           },
           {
@@ -68,8 +56,7 @@ const routes: Array<RouteRecordRaw> = [
             component: Link,
             meta: {
               title: '链接',
-              showlevel: 2,
-              requiresAuth: true
+              requiresAuth: false
             }
           }
         ]
@@ -79,25 +66,22 @@ const routes: Array<RouteRecordRaw> = [
         component: ArticleManage,
         meta: {
           title: '文章管理',
-          showlevel: 1,
-          requiresAuth: true
+          requiresAuth: false
         },
         children: [
           {
             path: 'classify',
             component: Articles,
             meta: {
-              title: '分类',
-              showlevel: 2,
-              requiresAuth: true
+              title: '列表',
+              requiresAuth: false
             }
           },
           {
             path: 'edit',
             component: ArticleEdit,
             meta: {
-              title: '编辑',
-              showlevel: 2,
+              title: '新增',
               requiresAuth: true
             }
           }
@@ -107,8 +91,7 @@ const routes: Array<RouteRecordRaw> = [
         path: '/user',
         component: User,
         meta: {
-          title: '用户信息',
-          showlevel: 1,
+          title: '用户管理',
           requiresAuth: true
         }
       }
@@ -121,30 +104,34 @@ const router = createRouter({
   routes
 })
 
-//导航守卫检测token
-// router.beforeEach((to, from, next) => {
-//   let token = getToken()
-//   if(token) {
-//     getUserInfoApi().then(response => {
-//       const res = response.data.data.res
-//       if(res.code === 2000) {
-//         return next()
-//       }else {
-//         if(to.path === '/login') {
-//           removeUser() 
-//           next()
-//         }else {
-//           next('/login')
-//         }
-//       }
-//     })
-//   }else {
-//     if(to.path === '/login') {
-//       next()
-//     }else {
-//       next('/login')
-//     }
-//   }
-// })
+// 导航守卫检测token与用户权限
+router.beforeEach(async (to, from) => {
+  const user = myCrypto.decryptCBC(getUser())
+  const { requiresAuth } = to.meta
+
+  if(to.path === '/login') {
+    removeUser() 
+    return
+  }else if(from.path === '/login') {
+    return
+  }else {
+    if(user.username) {
+      const res = await checkToken({username: user.username})
+      if(res.data.code === 200) {
+        // 查看路由是否需要管理员权限
+        if(!user.isAdmin && requiresAuth){
+          ElMessage.error('请用管理员权限登录，方可查看！')
+          return false
+        }else{
+          return
+        }
+      }else {
+        return '/login'
+      }
+    }else {
+      return '/login'
+    }
+  }
+})
 
 export default router

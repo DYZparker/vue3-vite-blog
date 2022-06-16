@@ -1,15 +1,21 @@
 <template>
   <SearchBlock 
-    :searchMsg="searchMsg" 
+    :isAddNew="true"
+    :searchMsg="searchArticleMsg" 
     @getData="getData" 
     @addNew="addNew" 
   />
   <DataTableBlock 
-    :tableMenu="tableMenu" 
+    :tableMenu="articleTableMenu" 
     :tableList="tableList" 
     @edit="edit" 
     @remove="remove" 
-  />
+  >
+    <!-- 插槽 -->
+    <template #tags ="{data}: any">
+      {{ data.tags.join('、') }}
+    </template>
+  </DataTableBlock>
   <PaginationBlock 
     :total="total" 
     :paginationData="paginationData" 
@@ -19,53 +25,20 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from '../store'
 import SearchBlock from '../components/SearchBlock.vue'
 import DataTableBlock from '../components/DataTableBlock.vue'
 import PaginationBlock from '../components/PaginationBlock.vue'
-import { useStore } from '../store'
 import { IPagination } from '../types/common'
 import { ITableRowData } from '../types/article'
-import { useRouter } from 'vue-router'
+import { articleTableMenu, searchArticleMsg } from '../utils/constant'
 
 const store = useStore()
 const router = useRouter()
 const articleAbout = store.state.articleAbout
-const tableMenu = [
-  { 
-    title: '标题',
-    propName: 'title',
-    isEdit: true,
-    hasSlot: false,
-    width: 180
-  },
-  { 
-    title: '标签',
-    propName: 'tags',
-    isEdit: true,
-    hasSlot: false,
-    width: 180
-  },
-  { 
-    title: '封面地址',
-    propName: 'img',
-    isEdit: true,
-    hasSlot: false,
-    width: 180
-  },
-  { 
-    title: '简介',
-    propName: 'summary',
-    isEdit: true,
-    hasSlot: false,
-    width: 180
-  }
-]
 
 /* SearchBlock组件start */
-const searchMsg = {
-  searchName: 'keywords',
-  placeholderName: '关键字'
-}
 const getData = (data: IPagination) => store.dispatch('articleAbout/getArticleData', data)
 const addNew = () => {
   router.push({
@@ -96,13 +69,13 @@ const changePage = (data: IPagination) => store.dispatch('articleAbout/getArticl
 </script>
 
 <style scoped lang="scss">
-  .el-table {
-    overflow: auto;
-  }
-  .el-table::before {
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      height: 0px;
-  }
+.el-table {
+  overflow: auto;
+}
+.el-table::before {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 0px;
+}
 </style>
