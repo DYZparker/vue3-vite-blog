@@ -3,6 +3,7 @@ import { IPagination } from './common'
 export interface ITableRowData {
   _id: number;
   linkName: string;
+  describe: string;
   href: string;
   img: string;
 }
@@ -30,6 +31,7 @@ export class InitLinkData {
     data: {
       _id: 0,
       linkName: '',
+      describe: '',
       href: '',
       img: ''
     }

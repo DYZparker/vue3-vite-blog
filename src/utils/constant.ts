@@ -50,6 +50,13 @@ export const linkTableMenu = [
     width: 180
   },
   { 
+    title: '链接描述',
+    propName: 'describe',
+    isEdit: true,
+    hasSlot: false,
+    width: 180
+  },
+  { 
     title: '链接地址',
     propName: 'href',
     isEdit: true,
@@ -75,6 +82,7 @@ export const initLinkEditData = {
   data: {
     _id: 0,
     linkName: '',
+    describe: '',
     href: '',
     img: ''
   }
@@ -84,6 +92,10 @@ export const linkRules = {
   linkName: [
     { required: true, message: '请输入链接名', trigger: 'blur' },
     { min: 1, max: 24, message: '账号长度需要在1~24之间', trigger: 'blur' }
+  ],
+  describe: [
+    { required: true, message: '请输入链接描述', trigger: 'blur' },
+    { min: 4, max: 24, message: '账号长度需要在4~24之间', trigger: 'blur' }
   ],
   href: [
     { required: true, message: '请输入链接地址', trigger: 'blur' },
@@ -127,6 +139,41 @@ export const articleTableMenu = [
 export const searchArticleMsg = {
   searchName: 'keywords',
   placeholderName: '关键字'
+}
+
+export const articleRules = {
+  title: [
+    { required: true, message: '请输入文章标题', trigger: 'blur' }
+  ],
+  tags: [
+    {
+      type: 'array',
+      required: true,
+      message: '请选择文章标签分类',
+      trigger: 'change',
+    },
+  ],
+  img: [
+    {
+      required: false,
+      message: '请输入封面图片地址',
+      trigger: 'change',
+    },
+  ],
+  summary: [
+    {
+      required: true,
+      message: '请输入文章介绍',
+      trigger: 'change',
+    },
+  ],
+  content: [
+    {
+      required: true,
+      message: '请输入文章内容',
+      trigger: 'blur',
+    },
+  ]
 }
 /* Article组件end */
 

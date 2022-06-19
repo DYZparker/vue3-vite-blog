@@ -18,6 +18,7 @@ const linkModule: Module<ILinkAbout, IState> = {
       data: {
         _id: 0,
         linkName: '',
+        describe: '',
         href: '',
         img: ''
       }

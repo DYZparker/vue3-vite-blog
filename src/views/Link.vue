@@ -10,7 +10,7 @@
     :tableList="tableList" 
     @edit="edit" 
     @remove="remove" 
-  />w
+  />
   <PaginationBlock 
     :total="total" 
     :paginationData="paginationData" 

@@ -24,3 +24,14 @@ export interface IArticleAbout {
   // editData: IEditData;
   paginationData: IPagination;
 }
+
+export class InitArticleData {
+  ruleForm: ITableRowData = {
+    _id: 0,
+    title: '',
+    tags: [],
+    img: '',
+    summary: '',
+    content: ''
+  }
+}

@@ -2,7 +2,7 @@
   <el-form
     ref="ruleFormRef"
     :model="ruleForm"
-    :rules="rules"
+    :rules="articleRules"
     label-width="80px"
     size="default"
   >
@@ -39,57 +39,18 @@
 
 <script setup lang="ts">
 import { reactive, ref, onMounted, computed } from 'vue'
+import { useStore } from '../store'
 import { useRoute, useRouter } from 'vue-router'
 import { FormInstance } from '../types/common'
-import { useStore } from '../store'
+import { InitArticleData } from '../types/article'
+import { articleRules } from '../utils/constant'
 
 const route = useRoute()
 const router = useRouter()
 const store = useStore()
 const {articleAbout, tagAbout} = store.state
 const ruleFormRef = ref<FormInstance>()
-const ruleForm = reactive({
-    _id: 0,
-    title: '',
-    tags: [],
-    img: '',
-    summary: '',
-    content: ''
-})
-const rules = {
-  title: [
-    { required: true, message: '请输入文章标题', trigger: 'blur' }
-  ],
-  tags: [
-    {
-      type: 'array',
-      required: true,
-      message: '请选择文章标签分类',
-      trigger: 'change',
-    },
-  ],
-  img: [
-    {
-      required: false,
-      message: '请输入封面图片地址',
-      trigger: 'change',
-    },
-  ],
-  summary: [
-    {
-      required: true,
-      message: '请输入文章介绍',
-      trigger: 'change',
-    },
-  ],
-  content: [
-    {
-      required: true,
-      message: '请输入文章内容',
-      trigger: 'blur',
-    },
-  ]
-}
+const { ruleForm } = reactive(new InitArticleData)
 const tableList = computed(() => articleAbout.tableData.list)
 const tagList = computed(() => tagAbout.tableData.list)
 if(tagList.value.length === 0) {

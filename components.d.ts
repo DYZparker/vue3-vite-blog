@@ -49,6 +49,7 @@ declare module '@vue/runtime-core' {
     ElTag: typeof import('element-plus/es')['ElTag']
     ElTimePicker: typeof import('element-plus/es')['ElTimePicker']
     Header: typeof import('./src/components/Header.vue')['default']
+    InfiniteScroll: typeof import('element-plus/es')['ElInfiniteScroll']
     Layout: typeof import('./src/components/Layout.vue')['default']
     Main: typeof import('./src/components/Main.vue')['default']
     Navbar: typeof import('./src/components/Navbar.vue')['default']

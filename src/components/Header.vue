@@ -1,9 +1,9 @@
 <template>
   <el-row>
-    <el-col :span="22">
+    <el-col :span="20">
       <h2>云中博客后台管理系统</h2>
     </el-col>
-    <el-col :span="2">
+    <el-col :span="4" class="btnbox">
       <span>{{ user.nickname }}</span>
       <el-button class="out-btn" type="danger" @click="handlelogout">退出</el-button>
     </el-col>
@@ -31,10 +31,6 @@ const handlelogout = () => {
 
 
 <style scoped lang="scss">
-.logo {
-  height: 80px;
-}
-
 h2 {
   text-align: center;
   color: #fff;
@@ -43,13 +39,20 @@ h2 {
   line-height: 80px;
 }
 
-span {
-  color: #fff;
-  font-size: 20px;
-  margin-right: 20px;
-}
+.btnbox {
+  display: flex;
+  span {
+    flex-grow: 1;
+    margin: auto;
+    color: #fff;
+    font-size: 20px;
+    text-align: right;
+    margin-right: 20px;
+  }
 
-.out-btn {
-  margin: 20px auto;
+  .out-btn {
+    width: 80px;
+    margin: auto;
+  }
 }
 </style>
